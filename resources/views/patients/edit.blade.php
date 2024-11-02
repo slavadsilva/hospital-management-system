@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row py-5">
-        <h1 class="text-center text-primary fw-bold">Add Patient</h1>
+        <h1 class="text-center text-primary fw-bold">Edit Patient</h1>
     </div>
     <div class="row">
         <form action="{{route('patients.update', $patient->id)}}" method="POST" enctype="multipart/form-data">

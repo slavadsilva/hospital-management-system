@@ -22,10 +22,12 @@
                 <input type="number" class="form-control" name="staff_count" placeholder="{{$hospital->staff_count}}" value="{{$hospital->name}}">
             </div>
             <div class="mb-3">
-                <label for="formFile" class="form-label">Hospital Logo</label>
+            <label class="form-label">Old Image</label><br>
+            <img src="{{ asset('/storage/uploads/hospitals/'.$hospital->logo) }}"  alt="hospital_logo" width="100px"><br><br>
+                <label for="formFile" class="form-label">New Hospital Logo</label>
                 <input class="form-control" type="file" name="logo" id="formFile">
             </div>
-            <div class="text-center">
+            <div class="text-center py-5">
                 <button class="btn btn-primary w-25 rounded-4" type="update">Update</button>
             </div>
         </form>

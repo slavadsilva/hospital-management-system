@@ -10,11 +10,37 @@
         <p>{{$message}}</p>
     </div>
     @endif
-    <div class="row float-end">
-        <a href="{{route('doctors.create')}}" class="btn btn-primary">Add New Doctor</a>
+    <div class="d-flex justify-content-center">
+        <form class="d-flex pb-3 w-75" role="search" action="{{url('search-doctor')}}" method="GET">
+            @csrf
+            <input class="form-control me-2" type="search" type="text" name="search" placeholder="search" aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+    </div>
+    @if(!empty($row) && $row->isNotEmpty())
+        @foreach($row as $row)
+        <div class="row py-3">
+            <h5 class="text-center">Search Result</h5>
+            <table class="table">
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                </tr>
+                <tr>
+                    <td>{{$row->first_name}}</td>
+                    <td>{{$row->last_name}}</td>
+                    <td>{{$row->specialization}}</td>
+                </tr>
+            </table>
+        </div>
+        @endforeach
+        @endif
+    <div class="row py-3 justify-content-end">
+        <a href="{{route('doctors.create')}}" class="btn btn-primary w-25">Add New Doctor</a>
     </div>
     <div class="row">
-        <table>
+        <div class="table-responsive">
+            <table class="table align-middle">
             <tr>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -44,6 +70,7 @@
             </tr>
             @endforeach
         </table>
+        </div>  
     </div>
 </div>
 

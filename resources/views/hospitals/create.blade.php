@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row py-5">
-        <h1 class="text-center text-primary fw-bold">Add Doctor</h1>
+        <h1 class="text-center text-primary fw-bold">Add Hospital   </h1>
     </div>
     <div class="row">
         <form action="{{route('hospitals.store')}}" method="POST" enctype="multipart/form-data">

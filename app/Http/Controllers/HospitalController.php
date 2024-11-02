@@ -12,6 +12,9 @@ class HospitalController extends Controller
      */
     public function index()
     {
+        //Restore Deleted Data
+        //$hospitals = Hospital::withTrashed()->get();
+        
         $hospitals = Hospital::all();
 
         return view('hospitals.index', compact('hospitals'));
@@ -34,17 +37,18 @@ class HospitalController extends Controller
             'name' => 'required',
             'location' => 'required',
             'staff_count' => 'required',
-            'logo' => 'max: 2000',
+            'logo' => 'nullable|max: 2000',
         ]);
 
-        // if ($request->hasFile('logo')) {
-        //     $file = $request->file('logo');
-        //     $extension = $file->getClientOriginalExtension();
-        //     $logoFilename = time() . '.' . $extension;
-        //     $file->move(storage_path('app/public/uploads/hospitals'), $logoFilename);
-        // }
+        $data = new Hospital($validateData);
 
-        Hospital::create($validateData);
+        if ($request->hasFile('logo')) {
+            $filename = time() . '.' . $request->logo->getClientOriginalExtension();
+            $request->logo->move(storage_path('app/public/uploads/hospitals'), $filename);
+            $data->logo = $filename;
+        }
+
+        $data->save();
 
         return redirect()->route('hospitals.index')->with('success', 'Hospital Added Successfully!');
     }
@@ -70,7 +74,19 @@ class HospitalController extends Controller
      */
     public function update(Request $request, hospital $hospital)
     {
-        $hospital->update($request->all());
+        $validateData = $request->validate([
+            'logo' => 'nullable|max: 2000',
+        ]);
+
+        $hospital->fill($validateData);
+
+        if ($request->hasFile('logo')) {
+            $filename = time() . '.' . $request->logo->getClientOriginalExtension();
+            $request->logo->move(storage_path('app/public/uploads/hospitals'), $filename);
+            $hospital->logo = $filename;
+        }
+
+        $hospital->save();
 
         return redirect()->route('hospitals.index')->with('success','hospital details updated successfully!');
     }
@@ -83,5 +99,20 @@ class HospitalController extends Controller
         $hospital->delete();
 
         return redirect()->route('hospitals.index')->with('success','hospital deleted successfully!');
+    }
+
+    public function search(Request $request)
+    {
+        $hospitals = Hospital::all();
+
+        $search = $request->search;
+
+        $row = Hospital::where(function($query) use ($search)
+        {
+            $query->where('name','like',"%$search%")
+            ->orWhere('location','like',"%$search%");
+        })->get();
+
+        return view('hospitals.index', compact('hospitals','row'));
     }
 }

@@ -13,6 +13,9 @@ class DoctorController extends Controller
      */
     public function index()
     {
+        //Restore Deleted Data
+        //$doctors = Doctor::withTrashed()->get();
+
         $doctors = Doctor::all();
 
         return view('doctors.index', compact('doctors'));
@@ -78,5 +81,21 @@ class DoctorController extends Controller
         $doctor->delete();
 
         return redirect()->route('doctors.index')->with('success','doctor deleted successfully!');
+    }
+
+    public function search(Request $request)
+    {
+        $doctors = Doctor::all();
+
+        $search = $request->search;
+
+        $row = Doctor::where(function($query) use ($search)
+        {
+            $query->where('first_name','like',"%$search%")
+            ->orWhere('last_name','like',"%$search%")
+            ->orWhere('specialization','like',"%$search%");
+        })->get();
+
+        return view('doctors.index', compact('doctors','row'));
     }
 }

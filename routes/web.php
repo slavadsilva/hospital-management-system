@@ -3,9 +3,9 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\HospitalController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Middleware\Admin;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('home');
+// });
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -42,3 +42,14 @@ Route::group(['middleware' => 'auth'], function(){
     Route::resource('/doctors', DoctorController::class);
     Route::resource('/patients', PatientController::class);
 });
+
+Route::get('/', [PageController::class, 'index'])->name('/');
+
+// Search routes    
+Route::get('/search-data', [AdminController::class, 'search']);
+Route::get('/search-hospital', [HospitalController::class, 'search']);
+Route::get('/search-doctor', [DoctorController::class, 'search']);
+Route::get('/search-patient', [PatientController::class, 'search']);
+
+//PDF REPORT GENERATOR
+Route::get('patient-report/{patient}', [PatientController::class, 'report'])->name('patient.report');
